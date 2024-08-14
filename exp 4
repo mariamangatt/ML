@@ -1,0 +1,5 @@
+library(ggplot2)
+
+ggplot(Titanic, aes(x = Age, fill = Sex)) +
+  geom_histogram(binwidth = 5, color = "black", position = "dodge") +
+  labs(title = "Age Distribution on the Titanic", x = "Age", y = "Count", fill = "Gender")
