@@ -1,0 +1,34 @@
+# Importing necessary libraries
+library(mlbench)
+library(caret)
+library(e1071)
+library(class) # For KNN
+# Loading the Soybean dataset from mlbench
+data(Soybean)
+dataset &lt;- Soybean
+head(dataset, n = 50)
+# Preprocessing
+sum(is.na(dataset)) # Count the number of missing values
+soybean &lt;- na.omit(dataset) # Remove rows with missing values
+# Preprocessing: Centering and scaling the dataset (excluding the first column)
+preproc &lt;- preProcess(soybean[, -1], method = c(&quot;center&quot;, &quot;scale&quot;))
+soybean[, -1] &lt;- predict(preproc, soybean[, -1])
+# Splitting the dataset into training and testing sets
+set.seed(123) # For reproducibility
+splitIndex &lt;- createDataPartition(soybean$Class, p = 0.8, list = FALSE)
+training_data &lt;- soybean[splitIndex, ]
+
+testing_data &lt;- soybean[-splitIndex, ]
+# Implementing KNN
+# Extracting features and target variable
+training_features &lt;- training_data[, -1] # Exclude the first column (Class)
+training_labels &lt;- training_data$Class
+testing_features &lt;- testing_data[, -1]
+testing_labels &lt;- testing_data$Class
+# Setting the value of k
+k &lt;- 5
+# Applying the KNN model
+knn_pred &lt;- knn(train = training_features, test = testing_features, cl = training_labels, k = k)
+# Evaluating the model&#39;s performance
+conf_matrix &lt;- confusionMatrix(knn_pred, testing_labels)
+print(conf_matrix)
