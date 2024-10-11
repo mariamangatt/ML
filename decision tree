@@ -1,0 +1,61 @@
+# Step 1: Install and load necessary packages
+install.packages(&quot;rpart&quot;) # For decision tree
+install.packages(&quot;rpart.plot&quot;) # For plotting the decision tree
+install.packages(&quot;datasets&quot;) # For Titanic dataset
+
+library(rpart)
+library(rpart.plot)
+library(datasets)
+
+# Step 2: Load the Titanic dataset
+# The Titanic dataset in the &#39;datasets&#39; package is a table, so we need to convert it to a data frame
+titanic_data &lt;- as.data.frame(Titanic)
+
+# Step 3: Preprocess the data
+# The Titanic dataset in R has aggregated counts, so we need to &quot;expand&quot; it into individual rows.
+# Each row in Titanic has a &#39;Freq&#39; column indicating how many people fit that combination of
+attributes.
+# We&#39;ll expand it by replicating each row by the frequency value.
+
+# Expand the data frame by the &#39;Freq&#39; column
+titanic_data_expanded &lt;- titanic_data[rep(1:nrow(titanic_data), titanic_data$Freq), ]
+titanic_data_expanded$Freq &lt;- NULL # Remove the Freq column after expansion
+
+# Check the structure of the expanded dataset
+str(titanic_data_expanded)
+
+# Step 4: Convert appropriate columns to factors
+titanic_data_expanded$Survived &lt;- as.factor(titanic_data_expanded$Survived)
+titanic_data_expanded$Pclass &lt;- as.factor(titanic_data_expanded$Pclass)
+titanic_data_expanded$Sex &lt;- as.factor(titanic_data_expanded$Sex)
+
+titanic_data_expanded$Age &lt;- as.factor(titanic_data_expanded$Age)
+
+# Step 5: Split the data into training and testing sets
+set.seed(123) # For reproducibility
+train_index &lt;- sample(1:nrow(titanic_data_expanded), 0.8 * nrow(titanic_data_expanded))
+train_data &lt;- titanic_data_expanded[train_index, ]
+test_data &lt;- titanic_data_expanded[-train_index, ]
+
+# Step 6: Build the decision tree model
+# Formula: Survived as the target variable and Pclass, Sex, and Age as predictors
+# Note: This Titanic dataset doesn&#39;t have columns like &quot;Fare&quot; or &quot;Embarked&quot; compared to other
+datasets.
+titanic_tree &lt;- rpart(Survived ~ Pclass + Sex + Age,
+data = train_data,
+method = &quot;class&quot;)
+
+# Step 7: Visualize the decision tree
+rpart.plot(titanic_tree, type = 3, extra = 104, under = TRUE, varlen = 0)
+
+# Step 8: Make predictions on the test set
+predictions &lt;- predict(titanic_tree, test_data, type = &quot;class&quot;)
+
+# Step 9: Evaluate the model
+# Create a confusion matrix to compare predictions with actual survival
+confusion_matrix &lt;- table(Predicted = predictions, Actual = test_data$Survived)
+print(confusion_matrix)
+
+# Calculate accuracy
+accuracy &lt;- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+cat(&quot;Accuracy:&quot;, accuracy * 100, &quot;%\n&quot;)
