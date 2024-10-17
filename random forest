@@ -1,0 +1,36 @@
+install.packages("caret")
+
+install.packages("randomForest")
+
+install.packages("rpart.plot")
+
+install.packages("caTools")
+
+library(caTools)
+
+library(randomForest)
+
+library(rpart.plot)
+
+library(caret)
+
+
+data(iris)
+
+str(iris)
+
+
+split <- sample.split(iris$Species,SplitRatio=0.7)
+
+train_set <- subset(iris,split == TRUE)
+
+test_set <- subset(iris,split == FALSE)
+
+
+classifier<-randomForest(Species~.,data =train_set, ntree=100)
+
+pred <-predict(classifier, newdata=test_set)
+
+cm <-table(test_set$Species, pred)
+
+confusionMatrix(cm)
