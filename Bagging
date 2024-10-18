@@ -1,0 +1,29 @@
+install.packages("ipred")  # For bagging
+install.packages("caTools")
+install.packages("caret")
+
+library(caTools)
+library(ipred)
+library(caret)
+
+# Load and explore the dataset
+data(iris)
+str(iris)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Split the dataset
+split <- sample.split(iris$Species, SplitRatio = 0.7)
+train_set <- subset(iris, split == TRUE)
+test_set <- subset(iris, split == FALSE)
+
+# Bagging with ipred
+bagging_model <- bagging(Species ~ ., data = train_set, nbagg = 100)
+
+# Make predictions
+pred_bagging <- predict(bagging_model, newdata = test_set)
+
+# Confusion Matrix
+cm_bagging <- table(test_set$Species, pred_bagging)
+confusionMatrix(cm_bagging)
