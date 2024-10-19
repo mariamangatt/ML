@@ -1,0 +1,39 @@
+# Install and load necessary packages (run once)
+install.packages("gbm")  # For boosting
+install.packages("caret")
+install.packages("caTools")
+
+library(caTools)
+library(gbm)
+library(caret)
+
+# Load and explore the dataset
+data(iris)
+str(iris)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Split the dataset
+split <- sample.split(iris$Species, SplitRatio = 0.7)
+train_set <- subset(iris, split == TRUE)
+test_set <- subset(iris, split == FALSE)
+
+# Boosting with gbm
+boosting_model <- gbm(Species ~ ., data = train_set,
+                      distribution = "multinomial",
+                      n.trees = 100,
+                      interaction.depth = 1,
+                      n.minobsinnode = 10,
+                      shrinkage = 0.01,
+                      bag.fraction = 0.5,
+                      cv.folds = 5)
+
+# Make predictions
+pred_boosting <- predict(boosting_model, newdata = test_set, n.trees = 100, type = "response")
+pred_boosting_classes <- apply(pred_boosting, 1, which.max)
+
+# Confusion Matrix
+cm_boosting <- table(test_set$Species, factor(pred_boosting_classes, levels = 1:3,
+                                              labels = levels(test_set$Species)))
+confusionMatrix(cm_boosting)
