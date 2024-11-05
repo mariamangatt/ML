@@ -1,28 +1,31 @@
-# Importing necessary libraries
+
 library(mlbench)
 library(caret)
 library(e1071)
-# Loading the Soybean dataset from mlbench
-data(Soybean)
-dataset &lt;- Soybean
-head(dataset, n = 50)
-# Preprocessing
-sum(is.na(dataset)) # Count the number of missing values
-soybean &lt;- na.omit(dataset) # Remove rows with missing values
-# Preprocessing: Centering and scaling the dataset (excluding the first column)
-preproc &lt;- preProcess(soybean[, -1], method = c(&quot;center&quot;, &quot;scale&quot;))
-soybean[, -1] &lt;- predict(preproc, soybean[, -1])
-# Splitting the dataset into training and testing sets
-set.seed(123) # For reproducibility
-splitIndex &lt;- createDataPartition(soybean$Class, p = 0.8, list = FALSE)
 
-training_data &lt;- soybean[splitIndex, ]
-testing_data &lt;- soybean[-splitIndex, ]
-# Perform Naive Bayes classification
-naive_model &lt;- naiveBayes(Class ~ ., data = training_data)
-# Predicting the testing set results
-predictions &lt;- predict(naive_model, newdata = testing_data)
-# Evaluating the model&#39;s performance
-conf_matrix &lt;- confusionMatrix(predictions, testing_data$Class)
-# Output the results
+
+data(Soybean)
+dataset <- Soybean
+head(dataset, n = 50)
+
+
+sum(is.na(dataset)) 
+soybean <- na.omit(dataset) 
+
+preproc <- preProcess(soybean[, -1], method = c("center", "scale"))
+soybean[, -1] <- predict(preproc, soybean[, -1])
+
+set.seed(123) 
+splitIndex <- createDataPartition(soybean$Class, p = 0.8, list = FALSE)
+
+training_data <- soybean[splitIndex, ]
+testing_data <- soybean[-splitIndex, ]
+
+
+naive_model <- naiveBayes(Class ~ ., data = training_data)
+
+predictions <- predict(naive_model, newdata = testing_data)
+
+conf_matrix <- confusionMatrix(predictions, testing_data$Class)
+
 print(conf_matrix)
