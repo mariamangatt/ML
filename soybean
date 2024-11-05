@@ -1,30 +1,27 @@
-# Importing necessary libraries
-library(mlbench) #contains machine learning benchmark datasets
-library(caret) #for creating machine learning models
-library(e1071) #provides various functions for statistical learning
 
-# Loading the Soybean dataset from mlbench
+library(mlbench) 
+library(caret) 
+library(e1071) 
+
 data(Soybean)
 dataset <- Soybean
 head(dataset, n = 50)
 
-# Preprocessing
-sum(is.na(dataset))  # Count the number of missing values
-soybean <- na.omit(dataset)  # Remove rows with missing values
 
-# Preprocessing: Centering and scaling the dataset (excluding the first column) soybean[, -1]: This selects all columns except the first column of the soybean dataset. The first column is often assumed to be the target variable (e.g., class labels), so it's excluded from preprocessing. method = c("center", "scale"): This argument specifies the preprocessing methods to be applied:
-"center": Subtracts the mean of each feature from the feature values, effectively shifting the mean of the feature to 0.
-"scale": Divides each centered feature value by the standard deviation of the feature, leading to a standard deviation of 1 for each feature.
+sum(is.na(dataset))  
+soybean <- na.omit(dataset) 
+
+
 
 preproc <- preProcess(soybean[, -1], method = c("center", "scale"))
 soybean[, -1] <- predict(preproc, soybean[, -1])
 
-# Splitting the dataset into training and testing sets
-set.seed(123)  # For reproducibility
+
+set.seed(123) 
 splitIndex <- createDataPartition(soybean$Class, p = 0.8, list = FALSE)
 training_data <- soybean[splitIndex, ]
 testing_data <- soybean[-splitIndex, ]
 
-# Output the training and testing datasets
+
 training_data
 testing_data
