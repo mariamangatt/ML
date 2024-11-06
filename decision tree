@@ -40,4 +40,4 @@ print(confusion_matrix)
 
 # Calculate accuracy
 accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
-cat(&quot;Accuracy:&quot;, accuracy * 100, &quot;%\n&quot;)
+cat("Accuracy:", accuracy * 100,2),"%\n") 
