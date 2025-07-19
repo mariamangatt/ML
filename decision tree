@@ -1,7 +1,8 @@
 
 library(rpart)
 library(rpart.plot)
-library(datasets)
+library(datasets) 
+
 
 
 titanic_data <- as.data.frame(Titanic)
