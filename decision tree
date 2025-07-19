@@ -12,7 +12,7 @@ titanic_data_expanded$Freq <- NULL
 
 
 str(titanic_data_expanded)
-
+ 
 
 titanic_data_expanded$Survived <- as.factor(titanic_data_expanded$Survived)
 titanic_data_expanded$Pclass <- as.factor(titanic_data_expanded$Pclass)
