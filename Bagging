@@ -11,7 +11,7 @@ data(iris)
 str(iris)
 
 # Set seed for reproducibility
-set.seed(123)
+set.seed(123) 
 
 # Split the dataset
 split <- sample.split(iris$Species, SplitRatio = 0.7)
