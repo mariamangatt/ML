@@ -1,6 +1,6 @@
 library(ggplot2)
 
-ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) + 
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   labs(title = "Scatter Plot of Sepal Dimensions", x = "Sepal Length (cm)", y = "Sepal Width (cm)")
